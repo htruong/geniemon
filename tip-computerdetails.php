@@ -30,7 +30,7 @@ include_once ("includes/utils.php");
 $compid = intval($_GET['id']);
 
 // Now connect to the db
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
 
 // and see if we need to check any computer?
 $computersQuery = $dbTrackHandler->query(
@@ -39,10 +39,7 @@ $computersQuery = $dbTrackHandler->query(
 	'WHERE id = ' . $compid . '; '
 	);
 	
-while($computersQuery->valid()) {
-	$result = $computersQuery->current();
-	$computersQuery->next();
-}
+$result = $computersQuery->fetch();
 
 if (!$result) die('Computer information unavailable!');
 

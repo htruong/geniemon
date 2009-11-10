@@ -48,7 +48,9 @@ $timeNow = time();
 $time_limit = $timeNow - $check_interval;
 
 // Now connect to the db
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
+$batch_queries = array();
+
 
 // and see if we need to check any computer?
 $computersQuery = $dbTrackHandler->query(
@@ -58,22 +60,11 @@ $computersQuery = $dbTrackHandler->query(
 	'ORDER BY lastsignal '.
 	'LIMIT ' . $check_batch . ';'
 	);
-/*	
-echo (
-	'SELECT id, name, lastsignal '.
-	'FROM computers '.
-	'WHERE lastsignal < ' . $time_limit . ' OR lastsignal IS NULL '.
-	'ORDER BY lastsignal '.
-	'LIMIT ' . $check_batch . ";\n"
-	);
-*/
 
-// For now I think it's better not to use transactions
-//     as the script can timeout.
 
-while($computersQuery->valid()) {
 
-	$entry = $computersQuery->current();
+foreach ($computersQuery as $entry) {
+
 	$computerName = $entry['name'] . $check_suffix;
 	
 	// echo 'Querying ' . $computerName . ' ';
@@ -96,7 +87,7 @@ while($computersQuery->valid()) {
 	//	echo "\t SUCCESS.\n" ; 
 	//}
 	
-	$batch_queries .=
+	$batch_queries[] =
 		'UPDATE computers ' .
 		'SET lastsignal=' . $timeNow . ', '.
 			'laststatus = ' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . ' ' .
@@ -106,30 +97,20 @@ while($computersQuery->valid()) {
 		'VALUES '.
 		'("' . $computerName . '",' . $timeNow . ',' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . '); ';
 	
-	$computersQuery->next();
 	$computerscount += 1;
 }
 
 
+
+
 if ($computerscount > 0) {
-
-	$dbTrackHandler->query(
-		'BEGIN TRANSACTION; ' . 
-		$batch_queries .
-		'COMMIT;');
-	/*	
-	echo("\n\n" .
-		'BEGIN TRANSACTION; ' . 
-		$batch_queries .
-		'COMMIT; '."\n\n");
-
-	echo "Updated " . $computerscount . " since " . nicetime($time_limit) . "." ;
-	*/
+ foreach($batch_queries as $query) $dbTrackHandler->query($query);
 } else {
 	/*
 	echo "Whoa! Nothing to check.";
 	*/
 }
-	
+
+
 ?>
 

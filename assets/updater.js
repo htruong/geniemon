@@ -62,7 +62,7 @@ function updatePcStatus(regionId) {
 			statusDiv.innerHTML = "Updated Map to Live Status as of " + currentTime();
 		},
 failure: function(o) {
-			statusDiv.innerHTML = "AJAX Pwned :-("; //FAIL
+			statusDiv.innerHTML = "AJAX Time out..."; //FAIL
 		}
 	} 
 

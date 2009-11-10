@@ -39,41 +39,17 @@ if ($_POST['processes']) {
 $timeNow = time();
 
 if ($compName != "") {
-	$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+	$dbTrackHandler = connectDb();
 	$dbTrackHandler->query(
-		'BEGIN TRANSACTION; '.
 		'UPDATE computers '.
 		'SET laststatus='.AVAIBILITY_TYPE_BUSY.', lastsignal='.$timeNow.' '.
 		'WHERE name="'.$compName.'"; '.
 		'INSERT INTO trackrecords (name, time, status) '.
 		'VALUES ("'.$compName.'", '.$timeNow.', '.AVAIBILITY_TYPE_BUSY.'); '.
 		(($compProcesses != "")?'INSERT INTO miscrecords (name, timestamp, recordtype, data) '.
-		'VALUES ("'.$compName.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'') .
-		'COMMIT;'
+		'VALUES ("'.$compName.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'')
 		);
-	sqlite_close($dbTrackHandler);
 } else {
 }
-
-/* DEBUG ONLY */
-/*
-	ob_start();
-	var_dump($_POST);
-	$my_string = ob_get_contents();
-	ob_end_clean();
-		
-	$myFile = "/tmp/genie.txt";
-	$fh = fopen($myFile, 'w') or die("can't open file");
-	fwrite($fh, $my_string . "\n" . 'BEGIN TRANSACTION;'.
-		'UPDATE computers '.
-		'SET laststatus='.AVAIBILITY_TYPE_BUSY.', lastsignal='.$timeNow.' '.
-		'WHERE name="'.$compName.'";'.
-		'INSERT INTO trackrecords (name, time, status) '.
-		'VALUES ("'.$compName.'", '.$timeNow.', '.AVAIBILITY_TYPE_BUSY.');'.
-		'INSERT INTO miscrecords (name, timestamp, recordtype, data) '.
-		'VALUES ("'.$compName.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'");'.
-		'COMMIT;'."\n");
-	fclose($fh);
-*/
 
 ?>

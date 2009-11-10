@@ -34,20 +34,21 @@ if (!($_SESSION['loggedinUserPerms'] & VIEW_ZONES)) {
 	die('You do not have permission to view this page!');
 }
 
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
+
 // Query All Zones
 $zonesQuery = $dbTrackHandler->query(
 	'SELECT * FROM zones;'
 	);
 
-while($zonesQuery->valid()) {
-	$entry = $zonesQuery->current();
-	
+foreach ($zonesQuery as $entry) {
 	$thisZone['id'] = $entry['id'];
 	$thisZone['name'] = $entry['region_name']; 
 	$zones[] = $thisZone;
-	$zonesQuery->next();
 }
+
+$totalComputers = ($dbTrackHandler->query('SELECT count(*) FROM computers;')->fetch(PDO::FETCH_NUM));
+$offlineComputers = ($dbTrackHandler->query('SELECT count(*) FROM computers WHERE laststatus=' . AVAIBILITY_TYPE_OFFLINE . ';')->fetch(PDO::FETCH_NUM));
 
 echo _header("System Overview");
 ?>
@@ -71,18 +72,9 @@ foreach ( $zones as $thisZone )
 
 		<div class="yui-b">
 			<h2>Overview</h2>
-<?php
-
-	$result = $dbTrackHandler->query('SELECT count(*) FROM computers;');
-	$totalComputers = intval($result->fetchSingle());
-	
-	$result = $dbTrackHandler->query('SELECT count(*) FROM computers WHERE laststatus=' . AVAIBILITY_TYPE_OFFLINE . ';');
-	$offlineComputers = intval($result->fetchSingle());
-
-?>
 			<ul>
-				<li>Total: <?php echo $totalComputers; ?> PC</li>
-				<li>Offline: <font color="red"><?php echo $offlineComputers; ?></font> PC</li>
+				<li>Total: <?php echo $totalComputers[0]; ?> PC</li>
+				<li>Offline: <font color="red"><?php echo $offlineComputers[0]; ?></font> PC</li>
 			</ul>
 <?php
 if ($_SESSION['loggedinUserPerms'] & EDIT_ZONES) {

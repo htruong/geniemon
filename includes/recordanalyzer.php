@@ -139,7 +139,7 @@ function generateStatsBag($args, &$dbHandler) {
  $resultBag = array();
  
   
-  $results = &$dbHandler->unbufferedQuery('SELECT ' . $recordTableName . '.* ' . $sql_cmd . ';');
+  $results = $dbHandler->query('SELECT ' . $recordTableName . '.* ' . $sql_cmd . ';');
   
   
  $sortMode = 0; // group by computer name
@@ -163,8 +163,7 @@ function generateStatsBag($args, &$dbHandler) {
  
  $computerRecords = array();
  
- while($results->valid()) {
-   $result = $results->current();
+ foreach ($results as $result) {
    $currentComputer = $result[$recordTableName . '.name']; 
 
    $currentRecordedStatus = null;
@@ -209,8 +208,6 @@ function generateStatsBag($args, &$dbHandler) {
       addToResultBag($resultBag,$resultGroup,$currentRecordedStatus);
     } // if dupe records
   
-
-    $results->next();
   } // while results are valid
  
   // Sort results

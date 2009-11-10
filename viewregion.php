@@ -39,23 +39,27 @@ $regid = intval($_GET['id']);
 $iconOffsetX = ICON_SIZE_X / 2;
 $iconOffsetY = ICON_SIZE_Y / 2;
 
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
+
 // Query Selected Zone
 $zoneQuery = $dbTrackHandler->query(
-	'SELECT * ' .
-	'FROM zones ' .
-	'WHERE id = ' . $regid . ';');
-	
-if (!($zoneQuery->valid())) {
-	die('This zone ID is invalid!');
-}
+  'SELECT * ' .
+  'FROM zones ' .
+  'WHERE id = ' . $regid . ';');
 
-$entry = $zoneQuery->current();
-	
+//if (! ($zoneQuery->nextRowset()))
+//  die('This zone ID is invalid!');
+
+
+$entry = $zoneQuery->fetch();
+
 $regionName = $entry['region_name'];
 $regionWidth = $entry['region_width']; 
 $regionHeight = $entry['region_height']; 
 $regionOverlay = $entry['region_map_img']; 
+
+$zoneQuery->closeCursor();
+unset($zoneQuery);
 
 // Construct CSS for the region
 $regionCss = "display: block; width: $regionWidth"."px; height: $regionHeight"."px;";
@@ -66,18 +70,15 @@ $zoneEditable = ( $_SESSION['loggedinUserPerms'] & EDIT_ZONES ) ? "true" : "fals
 // Fetch available computers in the region
 
 $computersQuery = $dbTrackHandler->query(
-	'SELECT * ' .
-	'FROM computers ' .
-	'WHERE region = ' . $regid . ' '.
-	'ORDER BY id;');
-	
-	
-while($computersQuery->valid()) {
-	$entry = $computersQuery->current();
-	$regionHTML .= "\t\t\t\t".'<div class="computerbit computerbit-noinfo" id="computer'.$entry['id'].'" style="left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; " onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" ><a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;</a></div>'."\n";
-	$computersQuery->next();
-}
+  'SELECT * ' .
+  'FROM computers ' .
+  'WHERE region = ' . $regid . ' '.
+  'ORDER BY id;');
 
+foreach ($computersQuery as $entry)
+  $regionHTML .= "\t\t\t\t".'<div class="computerbit computerbit-noinfo" id="computer'.$entry['id'].'" style="left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; " onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" ><a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;</a></div>'."\n";
+
+unset($computersQuery);
 
 echo _header("Viewing $regionName");
 

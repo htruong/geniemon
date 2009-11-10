@@ -31,7 +31,7 @@ $regid = intval($_GET['id']);
 // Fetch available computers in the region
 
 // Now connect to the db
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
 
 // and see if we need to check any computer?
 $computersQuery = $dbTrackHandler->query(
@@ -41,10 +41,12 @@ $computersQuery = $dbTrackHandler->query(
 	'ORDER BY id; '
 	);
 	
-while($computersQuery->valid()) {
-	$computers[] = $computersQuery->current();
-	$computersQuery->next();
-}
+//while($computersQuery->valid()) {
+//	$computers[] = $computersQuery->current();
+//	$computersQuery->next();
+//}
+
+$computers = $computersQuery->fetchAll();
 
 header('Content-type: text/plain');
 echo array2json($computers);

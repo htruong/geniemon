@@ -28,6 +28,7 @@ function _header($title,$embed = false) {
 	
 if ($embed) $display = "none";
 if ($embed) $extrastyle = "<style> html { background: white !important; } </style>";
+if (!($_SESSION['loggedinUserPerms'] & GEN_STATISTICS)) $displayrepmenu = "none";
 
 return <<<HEADER
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -102,7 +103,7 @@ return <<<HEADER
 				<ul class="first-of-type">
 					<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="./">Home</a></li>
 
-					<li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="#">Reports</a>
+                    <li class="yuimenubaritem" style="display: none;"><a class="yuimenubaritemlabel" href="#">Reports</a>
 						<div id="menureports" class="yuimenu">
 							<div class="bd">                    
 								<ul>
@@ -147,7 +148,7 @@ function _footer($embed = false) {
 	</div>
 
 	<div id="ft" style="display: $display;">
-		<p>Powered by Genie Lab Monitor (Server), version $version.</p>
+		<p>Powered by <a href="http://tnhh.net/geniemon.xml">Genie Lab Monitor</a>, v $version.</p>
 	</div>
 
 </div>

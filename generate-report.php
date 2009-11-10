@@ -49,7 +49,7 @@ if (!($_SESSION['loggedinUserPerms'] & GEN_STATISTICS)) {
 // This is really nice :-)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	// Computer Statistics Generation
-	$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+	$dbTrackHandler = connectDb();
 	$resultBag = generateStatsBag($_POST, $dbTrackHandler);
 	
 	// ----------------------------------------------------
