@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
  * Copyright (C) 2009 Huan Truong
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,19 +24,24 @@
  * SUCH DAMAGE.
  */
 
-  define('DB_TRACK_FILE_TMP',	'/var/genie/tmp/genietrack.db');
-  define('DB_TRACK_FILE',		'/var/genie/dbs/genietrack.db');
-  define('DB_CONTROL_FILE',	'/var/genie/dbs/geniecontrol.db');
+  define('DB_CONNSTRING',	'mysql:dbname=geniedb;host=127.0.0.1');
+  define('DB_USERNAME',		'genie');
+  define('DB_PASSWORD',		'');
+
+  // DEPRECIATED SINCE 0.2.0
+  //define('DB_TRACK_FILE_TMP',   '/var/genie/tmp/genietrack.db');
+  //define('DB_TRACK_FILE',               '/var/genie/dbs/genietrack.db');
+  //define('DB_CONTROL_FILE',     '/var/genie/dbs/geniecontrol.db');
 
   // Guest Permissions, defaulted to view maps only
-  define('GUEST_PERMISSIONS',	bindec('110011000000'));
-  define('ICON_SIZE_X',	16);
-  define('ICON_SIZE_Y',	16);
+  define('GUEST_PERMISSIONS',   bindec('110011000000'));
+  define('ICON_SIZE_X', 16);
+  define('ICON_SIZE_Y', 16);
 
-  $check_interval = 8 * 60; 
+  $check_interval = 8 * 60;
   // in seconds.
   // active check interval
-  // active check interval should be twice of 
+  // active check interval should be twice of
   // the settings of active sending interval from the client.
 
   $check_packets = 2;
