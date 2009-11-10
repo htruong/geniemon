@@ -38,6 +38,7 @@ if (!($_SESSION['loggedinUserPerms'] & VIEW_ZONES)) {
 $regid = intval($_GET['id']);
 $iconOffsetX = ICON_SIZE_X / 2;
 $iconOffsetY = ICON_SIZE_Y / 2;
+$embedded = (intval($_GET['embedded']) == 1) ? true : false ;
 
 $dbTrackHandler = connectDb();
 
@@ -80,7 +81,8 @@ foreach ($computersQuery as $entry)
 
 unset($computersQuery);
 
-echo _header("Viewing $regionName");
+
+echo _header("Viewing $regionName", $embedded);
 
 echo <<<DIVMAP
 <div id="yui-main">
@@ -174,5 +176,5 @@ echo <<<DIVMAP
 </div>
 DIVMAP;
 
-echo _footer();
+echo _footer($embedded);
 ?>
