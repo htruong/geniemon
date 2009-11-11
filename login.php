@@ -59,20 +59,20 @@ if ($_GET['act'] == '') {
 	// Now set the loginSuccessful flag to false
 	$loginSuccessful = false;
 	
-	$dbControlHandler = new SQLiteDatabase(DB_CONTROL_FILE);
+    $dbControlHandler = connectDb();
 	
 	$username = escape_string($_POST['userName']);
-	$password = $_POST['password']; 
-	// We do not have to escape the password, because this will be hashed anyway.
+	$password = $_POST['password'];
 	
 	$loginQuery = $dbControlHandler->query(
 		"SELECT * FROM users WHERE username = \"$username\";"
 	);
+
+    $entry = $loginQuery->fetch();
 	
 	// Now check if there is at least a user that matches the
 	// entered data.
-	while($loginQuery->valid()) {
-		$entry = $loginQuery->current();
+    if(intval($entry["id"])) {
 		// Calculate Password Hash
 		$thisUserSalt = $entry['salt'];
 		$thisUserPwHash = $entry['password'];
@@ -85,7 +85,6 @@ if ($_GET['act'] == '') {
 			$_SESSION['loggedinUsername'] = $username;
 			$_SESSION['loggedinUserPerms'] = $entry['permissions'];
 		}
-		$loginQuery->next();
 	}
 	
 	if (!$loginSuccessful) {

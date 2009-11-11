@@ -37,10 +37,11 @@ if (!($_SESSION['loggedinUserPerms'] & EDIT_ZONES)) {
 	die('You do not have permission to view this page!');
 }
 
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
 
 $regid = intval($_POST['region_id']);
-$compid = intval($_POST['id']); 
+$compid = intval($_POST['id']);
+
 if ($compid == 0) {
 	$dbTrackHandler->query(
 		'INSERT INTO computers '.
