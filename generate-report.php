@@ -45,7 +45,7 @@ if (!($_SESSION['loggedinUserPerms'] & GEN_STATISTICS)) {
 
 if (intval($_GET['cache_id']) != 0)
 {
-  $filename = intval($_GET['cache_id'] . '.cache.json';
+  $filename = intval($_GET['cache_id']) . '.cache.json';
   // ----------------------------------------------------
   echo _header("Statistics Viewer");
   
