@@ -200,43 +200,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
 
     // ----------------------------------------------------
-      $filename = time() . '.cache.json';
+      $cacheid = time();
+      $filename = $cacheid . '.cache.json';
       $myFile = "reports-cache/" . $filename;
       $fh = fopen($myFile, 'w') or die("can't open file");
       fwrite($fh, $chart->toPrettyString());
       fclose($fh);
-
-
-    // ----------------------------------------------------
-    echo _header("Statistics Viewer");
-    echo <<<DIVMAP
-    <div id="yui-main">
-    <h2>Statistical results</h2>
-    <div id="my_chart">Loading...</div>
-    <div><p>Notice: These numbers are the <em>closest estimation</em> generated based on scattered results.</p></div>
-
-    <script type="text/javascript" src="js/swfobject.js"></script>
-    <script type="text/javascript">
-
-    swfobject.embedSWF(
-    "open-flash-chart.swf", "my_chart",
-    "100%", "600", "9.0.0", "expressInstall.swf",
-    {"data-file":"reports-cache/$filename"} );
-
-    </script>
-    </div>
-DIVMAP;
-
-
-
-
-    //echo "<pre>";
-    //print_r($resultBag);
-    //echo "</pre>";
-
-    echo _footer();
-
-
+      
+      header("location: generate-report.php?cache_id=$cacheid");
 
     die();
     }
