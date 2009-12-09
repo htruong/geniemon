@@ -35,7 +35,7 @@ $dbTrackHandler = connectDb();
 
 // and see if we need to check any computer?
 $computersQuery = $dbTrackHandler->query(
-	'SELECT id, name, lastsignal, laststatus '.
+	'SELECT id, lastsignal, laststatus '.
 	'FROM computers '.
 	'WHERE region = ' . $regid . ' '.
 	'ORDER BY id; '
