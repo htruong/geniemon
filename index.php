@@ -89,6 +89,10 @@ if ($_SESSION['loggedinUserPerms'] & EDIT_ZONES) {
 			</div>
 <?php } ?>
 		</div>	
-<?php 
+<?php
+
+//$compNamesArray = getCompNamesId($dbTrackHandler);
+//print_r($compNamesArray);
+
 echo _footer();
 ?>

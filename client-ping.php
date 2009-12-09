@@ -38,18 +38,24 @@ if ($_POST['processes']) {
 }
 $timeNow = time();
 
-if ($compName != "") {
+if ($compName != "")
+{
 	$dbTrackHandler = connectDb();
-	$dbTrackHandler->query(
-		'UPDATE computers '.
-		'SET laststatus='.AVAIBILITY_TYPE_BUSY.', lastsignal='.$timeNow.' '.
-		'WHERE name="'.$compName.'"; '.
-		'INSERT INTO trackrecords (name, time, status) '.
-		'VALUES ("'.$compName.'", '.$timeNow.', '.AVAIBILITY_TYPE_BUSY.'); '.
-		(($compProcesses != "")?'INSERT INTO miscrecords (name, timestamp, recordtype, data) '.
-		'VALUES ("'.$compName.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'')
-		);
-} else {
+    
+    // Translate from computer name to Id
+    $compNames = getCompNamesId($dbTrackHandler);
+    $compId = $compNames[$compName];
+    if (intval($compId)!=0)
+    {
+      $dbTrackHandler->query(
+          'UPDATE computers '.
+          'SET laststatus='.AVAIBILITY_TYPE_BUSY.', lastsignal='.$timeNow.' '.
+          'WHERE id=' . $compId . '; '.
+          'INSERT INTO trackrecords (compid, time, status) '.
+          'VALUES ("'.$compId.'", '.$timeNow.', '.AVAIBILITY_TYPE_BUSY.'); '.
+          (($compProcesses != "")?'INSERT INTO miscrecords (compid, time, recordtype, data) '.
+          'VALUES ("'.$compId.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'')
+          );
+    }
 }
-
 ?>

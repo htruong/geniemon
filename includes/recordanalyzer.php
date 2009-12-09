@@ -23,9 +23,7 @@
 * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 * SUCH DAMAGE.
 */
-// check if the record is a dupe (too near to last record)
-
-
+// check if the record is a dupe (too near to the last record)
 
 function isDupeRecord($name, $timeStm, &$computerRecords) {
   global $check_interval; 
@@ -47,7 +45,6 @@ function isDupeRecord($name, $timeStm, &$computerRecords) {
       return false;
     }
   } else {
-    //echo "First time, so NOPE. <br />";
     $computerRecords[$name] = $timeStm;
     return false;
   }
@@ -64,42 +61,86 @@ function generateStatsBag($args, &$dbHandler) {
    case 'computerStats':
      $recordTableName = 'trackrecords';
 
-     $sql_cmd = 'FROM trackrecords, computers, zones ' .
-		'WHERE ' . $recordTableName . '.name = computers.name AND computers.region = zones.id ';
+     $sql_cmd =
+        'SELECT trackrecords.time, trackrecords.status, trackrecords.compid, computers.name, computers.id, computers.region FROM trackrecords ' .
+        'LEFT OUTER JOIN computers ON trackrecords.compid = computers.id ';
+     $firstWHERE = true;
 
+     // Now select zone
+     if ($args['computerRange'] == 'zone') {
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.region = ' . intval($args['computersRangeParam'])  . ' ';
+      $firstWHERE = false;
+     }
+     
      // Now select time frame
      if (intval($args['timeFrame']) != 0) {
-       $sql_cmd .= 'AND ' . $recordTableName . '.time > ' . (time() - intval($args['timeFrame'])) . " ";
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.time > ' . (time() - intval($args['timeFrame'])) . " ";
+      $firstWHERE = false;
      }
 
+     if (intval($args['endTimeFrame']) != 0) {
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.time < ' . (time() - intval($args['endTimeFrame'])) . " ";
+      $firstWHERE = false;
+     }
+
+    // Now select week days
+    if (intval($args['filterWeekends']) != 0) {
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' DAYOFWEEK(FROM_UNIXTIME(' . $recordTableName . '.time)) > 1 AND ' . 
+      'DAYOFWEEK(FROM_UNIXTIME(' . $recordTableName . '.time)) < 7 ';
+      $firstWHERE = false;
+    }
+
+    // Now select daytime only
+    if (intval($args['filterNights']) != 0) {
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' HOUR(FROM_UNIXTIME(' . $recordTableName . '.time)) > 7 ' .
+      'OR ((HOUR(FROM_UNIXTIME(' . $recordTableName . '.time)) > 0) AND (HOUR(FROM_UNIXTIME(' . $recordTableName . '.time)) < 1)) ';
+      $firstWHERE = false;
+    }
+    
      // Now select the computer conditions
      switch ($args['computerStatus']) {
 	  case 'occupied':
-	    $sql_cmd .= 'AND ' . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_BUSY . '\' ';
+        $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_BUSY . '\' ';
+        $firstWHERE = false;
 	    break;
 	  case 'available':
-	    $sql_cmd .= 'AND ' . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_AVAILABLE . '\' ';
+        $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_AVAILABLE . '\' ';
+        $firstWHERE = false;
 	    break;
 	  case 'offline':
-	    $sql_cmd .= 'AND ' . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_OFFLINE . '\' ';
+        $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.status = \'' . AVAIBILITY_TYPE_OFFLINE . '\' ';
+        $firstWHERE = false;
 	    break;
 	  default:
      }
+
 
    break;
    ////////////////////////////////////////////////////////////////////////////////////////////////////
    case 'programUsage':
      $recordTableName = 'miscrecords';
 
-     $sql_cmd = 'FROM ' . $recordTableName . ', computers, zones ' .
-		'WHERE ' . $recordTableName . '.name = computers.name ' .
-		'AND ' . $recordTableName . '.recordtype = ' . RECORDTYPE_PROGRAMS . ' ' .
-		'AND computers.region = zones.id ';
+     $sql_cmd =
+     'SELECT miscrecords.time, miscrecords.data, miscrecords.compid, computers.name, computers.id FROM miscrecords ' .
+        'LEFT OUTER JOIN computers ON miscrecords.compid = computers.id ' .
+		'WHERE ' . $recordTableName . '.recordtype = ' . RECORDTYPE_PROGRAMS . ' ';
 
+        
+        // Now select zone
+        if ($args['computerRange'] == 'zone') {
+          $sql_cmd .= 'AND computers.region = ' . intval($args['computersRangeParam'])  . ' ';
+          $firstWHERE = false;
+        }
+        
       // Now select time frame
       if (intval($args['timeFrame']) != 0) {
-	$sql_cmd .= 'AND ' . $recordTableName . '.timestamp > ' . (time() - intval($args['timeFrame'])) . " ";
+        $sql_cmd .= 'AND ' . $recordTableName . '.time > ' . (time() - intval($args['timeFrame'])) . " ";
       }
+
+      if (intval($args['endTimeFrame']) != 0) {
+        $sql_cmd .= 'AND ' . $recordTableName . '.time < ' . (time() - intval($args['endTimeFrame'])) . " ";
+      }
+
 
    break;
    ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,35 +153,17 @@ function generateStatsBag($args, &$dbHandler) {
  
  // Now select the computer range
  switch ($args['computerRange']) {
-   case 'named':
-     $nameArray = explode(',', $args['computersRangeParam']); 
-     $sql_cmd .= "AND (";
-     for ($i=0; $i < count($nameArray); $i++) {
-       $sql_cmd .= ($i==0 ? '' : ' OR ') . $recordTableName . ".name == '" . $nameArray[$i] . "' ";
-     }
-     $sql_cmd .= ") ";
-     break;
-   case 'zones':
-     $sql_cmd .= "AND zones.region_name = '" . $args['computersRangeParam'] . "' ";
-     break;
-   default:
  }
  
-
-   
  $sql_cmd .= '';
- 
  
  // ----------------------------------------------------
  // Connect to the database and query it
 
-
-
  $resultBag = array();
  
   
-  $results = $dbHandler->query('SELECT ' . $recordTableName . '.* ' . $sql_cmd . ';');
-  
+ $results = $dbHandler->query($sql_cmd . ';');
   
  $sortMode = 0; // group by computer name
  switch ($args['groupType']) {
@@ -156,28 +179,29 @@ function generateStatsBag($args, &$dbHandler) {
    case 'oneBigChart':
      $sortMode = 4;
      break;
+   case 'hourDayCombined':
+     $sortMode = 5;
+     break;
    default:
      $sortMode = 0;
      break;
  }
  
  $computerRecords = array();
- 
+
  foreach ($results as $result) {
-   $currentComputer = $result[$recordTableName . '.name']; 
+   $currentComputer = $result['name'];
 
    $currentRecordedStatus = null;
 
-   // this is going to be ugly. whatever.
+   $currentRecordedTime = $result['time'];
    switch ($args['reportType']) {
-    case 'computerStats':
-      $currentRecordedTime = $result[$recordTableName . '.time'];
-      $currentRecordedStatus = $result[$recordTableName . '.status'];
-      break;
-    case 'programUsage':
-      $currentRecordedTime = $result[$recordTableName . '.timestamp'];
-      $currentRecordedStatus = explode("|",$result[$recordTableName . '.data']);
-      break;
+     case 'computerStats':
+       $currentRecordedStatus = $result['status'];
+       break;
+     default:
+       $currentRecordedStatus = explode("|",$result['data']);
+       break;
    }
 
   if (!isDupeRecord($currentComputer,$currentRecordedTime,$computerRecords)) {
@@ -186,7 +210,7 @@ function generateStatsBag($args, &$dbHandler) {
 	case 1: // Hour by Hour
 	    $resultGroup = date("H", $currentRecordedTime) . ":00";
 	break;
-      
+
 	case 2: // Day of Week
 	  $resultGroup = date("N:l", $currentRecordedTime);
 	break;
@@ -198,6 +222,10 @@ function generateStatsBag($args, &$dbHandler) {
 	case 4: // One Big Chart
 	  $resultGroup = "Big Chart";
 	break;
+
+    case 5: // Hour by Hour Day-by-Day of Week
+      $resultGroup = date("N:l H:00", $currentRecordedTime);
+      break;
 
 	default: // Computer Name
 	  $resultGroup = &$currentComputer;

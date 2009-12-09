@@ -57,5 +57,19 @@ if ($compid == 0) {
 		'WHERE id='. $compid .';');
 }
 
+echo (
+'INSERT INTO computers '.
+'(name,x,y,region) '.
+'VALUES ("'. $_POST['computer_name'] .'",'. $_POST['x'] .','. $_POST['y'] .','. $regid .');');
+
+echo (
+'UPDATE computers '.
+'SET '.
+'name = "'. $_POST['computer_name'] .'", '.
+'x = '. $_POST['x'] .', '.
+'y = '. $_POST['y'] .' '.
+'WHERE id='. $compid .';'
+);
+
 header('location: viewregion.php?id=' . $regid);
 ?>

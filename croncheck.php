@@ -63,41 +63,42 @@ $computersQuery = $dbTrackHandler->query(
 
 
 
-foreach ($computersQuery as $entry) {
+foreach ($computersQuery as $entry)
+  {
+  $computerId = $entry['id'];
+  $computerName = $entry['name'] . $check_suffix;
 
-	$computerName = $entry['name'] . $check_suffix;
-	
-	// echo 'Querying ' . $computerName . ' ';
-	
-	$ping->setArgs(array('count' => $check_packets, 'timeout' => $check_timeout));
-	
-	$pingResult = $ping->ping($computerName);
-	//var_dump($pingResult);
-	if (PEAR::isError($pingResult)) {
-		$failed = true;
-	} else {
-		$failed = ($pingResult->getLoss() > 0);
-	}
-	
-	//echo '[' . $pingResult->getTargetIp() . ']';
-	
-	//if ($failed) {
-	//	echo "\t FAILED.\n" ;
-	//} else {
-	//	echo "\t SUCCESS.\n" ; 
-	//}
-	
-	$batch_queries[] =
-		'UPDATE computers ' .
-		'SET lastsignal=' . $timeNow . ', '.
-			'laststatus = ' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . ' ' .
-		'WHERE id=' . $entry['id'] . '; ' . 
-		'INSERT INTO trackrecords ' .
-		'(name, time, status) ' .
-		'VALUES '.
-		'("' . $computerName . '",' . $timeNow . ',' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . '); ';
-	
-	$computerscount += 1;
+  // echo 'Querying ' . $computerName . ' ';
+
+  $ping->setArgs(array('count' => $check_packets, 'timeout' => $check_timeout));
+
+  $pingResult = $ping->ping($computerName);
+  //var_dump($pingResult);
+  if (PEAR::isError($pingResult)) {
+      $failed = true;
+  } else {
+      $failed = ($pingResult->getLoss() > 0);
+  }
+
+  //echo '[' . $pingResult->getTargetIp() . ']';
+
+  //if ($failed) {
+  //	echo "\t FAILED.\n" ;
+  //} else {
+  //	echo "\t SUCCESS.\n" ;
+  //}
+
+  $batch_queries[] =
+      'UPDATE computers ' .
+      'SET lastsignal=' . $timeNow . ', '.
+          'laststatus = ' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . ' ' .
+      'WHERE id=' . $entry['id'] . '; ' .
+      'INSERT INTO trackrecords ' .
+      '(compid, time, status) ' .
+      'VALUES '.
+      '("' . $computerId . '",' . $timeNow . ',' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . '); ';
+
+  $computerscount += 1;
 }
 
 

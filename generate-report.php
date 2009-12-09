@@ -85,30 +85,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		  ));
 		
 	} else {
-	  //print_r($resultBag );
 	  
 	  $allProgNames = array();
 	  
 	  foreach ($resultBag as $elm) {
 	      $progNames = array_keys($elm);
 	      foreach ($progNames as $progName) {
-		if (validProgram($progName)) {
-		if (!array_key_exists($progName, $allProgNames)) {
+          if (validProgram($progName)) {
+          if (!array_key_exists($progName, $allProgNames)) {
 		  $allProgNames[$progName] = "#" . dechex(rand(0,10000000));
-		}
-		}
-	      }
+		}}}
 	    }
-	    
-	  //print_r($allProgNames);
-	  
+        
+        $progsArray = array();
 	  foreach ($resultBag as $elm) {
 	      $tmpTotal = 0;
 	      $progNames = array_keys($elm);
 	      
 	      foreach ($elm as $programName => $programWeight) {
 	      if (validProgram($programName)) {
-		$tmpTotal += $programWeight;
+            $tmpTotal += $programWeight;
 	      }
 	      }
 	      
@@ -117,23 +113,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	      if ($tmpTotal == 0) $tmpTotal = 1; // Only Chuck Norris can divide by Zero.
 	      
 	      $progs = array();
-	      
+          
 	      foreach  ($elm as $programName => $programWeight) {
 	      if (validProgram($programName)) {
 	        $percentVal = $programWeight / $tmpTotal * 100;
-		
-		$progs[] = new bar_stack_value($percentVal, $allProgNames[$programName]);
-		
-		//echo ($allProgNames[$programName] . " : $percentVal | ");
-	      
-	      //echo "<br/>";
-	      
+            $progs[] = new bar_stack_value($percentVal, $allProgNames[$programName]);
+            $progsArray[($percentVal*1000000)] = $programName;
 	      }
 	      }
 	      
 	      $bar_stack->append_stack($progs);
 	    }
-	    
+        
+        
 	    $legends = array();
 
 	    //$strAllProgNames = array_keys($allProgNames);
@@ -143,6 +135,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	    }
 	    
 	    $bar_stack->set_keys($legends);
+
+        ksort($progsArray);
+        echo "<pre>";
+        while (list($key, $value) = each($progsArray)) {
+          $kw = $key/1000000;
+          echo "$kw: $value<br />\n";
+        }
+        echo "</pre>";
 	    
 	}
 	  //$bar_stack->set_tooltip( 'In #x_label# you get #total# days holiday a year.<br>Number of days: #val#' );
@@ -199,6 +199,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	</div>
 DIVMAP;
 
+
+
+
 	//echo "<pre>";
 	//print_r($resultBag);
 	//echo "</pre>";
@@ -232,7 +235,8 @@ echo <<<DIVMAP
 		<select id="groupType" name="groupType">
 		  <option value="hourByHour">Hour-by-Hour</option>
 		  <option value="dayofWeek">Weekday-by-Weekday</option>
-		  <option value="individualDay">Day-by-Day</option>
+          <option value="individualDay">Day-by-Day</option>
+          <option value="hourDayCombined">Hour-by-Hour Day-by-Day</option>
 		  <option value="computerName">Computer Name</option>
 		  <option value="oneBigChart">One Big Pie Chart</option>
 		</select> <br /> <br />
@@ -240,9 +244,8 @@ echo <<<DIVMAP
 	for 
 		<select id="computerRange" name="computerRange">
 		  <option value="all">- (all computers) -</option>
-		  <option value="named">computers named</option>
-		  <option value="zones">computers in the zones named</option>
-		</select>	
+		  <option value="zone">zone id=</option>
+		</select>
 		<input id="computersRangeParam" name="computersRangeParam" value=""> <br /> <br />
 	
 	when they are
@@ -254,16 +257,40 @@ echo <<<DIVMAP
 		</select>
 	<br /> <br />
 	
-	during the period
+	beginning
 		<select id="timeFrame" name="timeFrame">
 		  <option value="0">- (the dawn of time) -</option>
 		  <option value="15552000">the last 6 months</option>
 		  <option value="10368000">the last 4 months</option>
 		  <option value="7776000">the last 3 months</option>
 		  <option value="2592000">the last 30 days</option>
+		  <option value="1296000">the last 15 days</option>
 		  <option value="604800">the last 7 days</option>
 		  <option value="86400">the last 24 hours</option>
-		</select>. <br />
+		</select>
+	till
+		<select id="endTimeFrame" name="endTimeFrame">
+		  <option value="0">- (now) -</option>
+		  <option value="15552000">the last 6 months</option>
+		  <option value="10368000">the last 4 months</option>
+		  <option value="7776000">the last 3 months</option>
+		  <option value="2592000">the last 30 days</option>
+		  <option value="1296000">the last 15 days</option>
+		  <option value="604800">the last 7 days</option>
+		  <option value="86400">the last 24 hours</option>
+        </select>
+        and <select id="filterNights" name="filterNights">
+        <option value="1" selected>Filter out Nighttime</option>
+        <option value="0">Do not count Nights</option>
+        </select>
+        
+        <select id="filterWeekends" name="filterWeekends">
+        <option value="1" selected>Filter out Weekends</option>
+        <option value="0">Do not count Weekends</option>
+        </select>
+        
+
+	<br />
 	</p>
 	
 	<p align="center"><input type="submit" value="Thanks!" /> <br />

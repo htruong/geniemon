@@ -25,6 +25,10 @@
  */
 
 
+///////////////////////////////////////////////////////////////////////////////
+require('Cache/Lite.php');
+
+
 define('THIS_VERSION',		'0.2.0');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,6 +51,8 @@ define('AVAIBILITY_TYPE_AVAILABLE',	1);
 define('AVAIBILITY_TYPE_BUSY',		2);
 
 define('RECORDTYPE_PROGRAMS',		1);
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Connect DB
@@ -195,7 +201,8 @@ function array2json($arr) {
 ///////////////////////////////////////////////////////////////////////////////
 // initSession
 // Have to call before anything
-function initSession() {
+function initSession()
+{
   session_start();
   if (!$_SESSION['loggedinUserPerms'])
   {
@@ -206,11 +213,23 @@ function initSession() {
 ///////////////////////////////////////////////////////////////////////////////
 
 $allignored = explode('|', $ignored_programs);
-function validProgram($program) {
+function validProgram($program)
+{
   global $allignored;
   return !in_array(strtolower($program), $allignored);
 }
 
+
+function cacheLiteOpts()
+{
+ $options = array
+ (
+  'cacheDir' => '/tmp/',
+  'lifeTime' => 3600, //1 hour
+  'automaticSerialization' => true
+ );
+ return $options;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // FROM http://us.php.net/time
@@ -256,5 +275,27 @@ function nicetime($date)
 }
 
 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+function getCompNamesId($dbTrackHandler)
+{
+  $compNames = array();
+  
+  $cache = new Cache_Lite(cacheLiteOpts());
+
+  // if the names are not cached, then cache them.
+  if (($compNames = $cache->get('compNames')) === false)
+  {
+    $computerNames = $dbTrackHandler->query('SELECT id, name FROM computers;');
+    foreach ($computerNames as $entry)
+    {
+      $compNames[$entry['name']] = intval($entry['id']);
+    }
+    $cache->save($compNames, 'compNames');
+  }
+  return $compNames;
+}
 
 ?>
