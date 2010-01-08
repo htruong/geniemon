@@ -29,7 +29,7 @@
 require('Cache/Lite.php');
 
 
-define('THIS_VERSION',		'0.2.0');
+define('THIS_VERSION',		'0.10.01.081049');
 
 ///////////////////////////////////////////////////////////////////////////////
 // PERMISSIONS DECLARATION
