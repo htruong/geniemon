@@ -35,7 +35,7 @@ include_once ("includes/recordanalyzer.php");
 include_once ('includes/php-ofc-library/open-flash-chart.php');
 
 $params = array();
-  $params['reportName'] = 'Genie All Computers Weekly Report';
+  $params['reportName'] = 'All Computers Weekly Report';
   $params['reportType'] = 'computerStats';
   $params['groupType']  = 'hourDayCombined';
   $params['computerRange']  = 'all';
@@ -47,7 +47,7 @@ $params = array();
 $retCacheId = generateStats($params);
 
 $mailsubject = "Report(s) generated!";
-$mailbody = "The report " . $params['reportName'] . " is ready to view at \n $siteLocation/generate-report.php?cache_id=$retCacheId";
+$mailbody = "" . $params['reportName'] . " is ready:\n $siteLocation/generate-report.php?cache_id=$retCacheId";
 
 $reportmails = explode('|', $cronReportEmails);
 
