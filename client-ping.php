@@ -51,9 +51,9 @@ if ($compName != "")
           'UPDATE computers '.
           'SET laststatus='.AVAIBILITY_TYPE_BUSY.', lastsignal='.$timeNow.' '.
           'WHERE id=' . $compId . '; '.
-          'INSERT INTO trackrecords (compid, time, status) '.
+          'INSERT INTO trackrecords (`compid`, `time`, `status`) '.
           'VALUES ("'.$compId.'", '.$timeNow.', '.AVAIBILITY_TYPE_BUSY.'); '.
-          (($compProcesses != "")?'INSERT INTO miscrecords (compid, time, recordtype, data) '.
+          (($compProcesses != "")?'INSERT INTO miscrecords (`compid`, `time`, `recordtype`, `data`) '.
           'VALUES ("'.$compId.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'')
           );
     }
