@@ -57,6 +57,7 @@ if ($compid == 0) {
 		'WHERE id='. $compid .';');
 }
 
+/*
 echo (
 'INSERT INTO computers '.
 '(name,x,y,region) '.
@@ -70,6 +71,7 @@ echo (
 'y = '. $_POST['y'] .' '.
 'WHERE id='. $compid .';'
 );
+*/
 
 header('location: viewregion.php?id=' . $regid);
 ?>
