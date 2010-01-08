@@ -68,7 +68,7 @@ foreach ($computersQuery as $entry)
   $computerId = $entry['id'];
   $computerName = $entry['name'] . $check_suffix;
 
-  // echo 'Querying ' . $computerName . ' ';
+  echo 'Querying ' . $computerName . ' ';
 
   $ping->setArgs(array('count' => $check_packets, 'timeout' => $check_timeout));
 
@@ -82,11 +82,11 @@ foreach ($computersQuery as $entry)
 
   //echo '[' . $pingResult->getTargetIp() . ']';
 
-  //if ($failed) {
-  //	echo "\t FAILED.\n" ;
-  //} else {
-  //	echo "\t SUCCESS.\n" ;
-  //}
+  if ($failed) {
+  	echo "\t FAILED.\n" ;
+  } else {
+  	echo "\t SUCCESS.\n" ;
+  }
 
   $batch_queries[] =
       'UPDATE computers ' .
@@ -94,9 +94,9 @@ foreach ($computersQuery as $entry)
           'laststatus = ' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . ' ' .
       'WHERE id=' . $entry['id'] . '; ' .
       'INSERT INTO trackrecords ' .
-      '(compid, time, status) ' .
+      '(`compid`, `time`, `status`) ' .
       'VALUES '.
-      '("' . $computerId . '",' . $timeNow . ',' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . '); ';
+      '(' . $computerId . ',' . $timeNow . ',' . ($failed?AVAIBILITY_TYPE_OFFLINE:AVAIBILITY_TYPE_AVAILABLE) . '); ';
 
   $computerscount += 1;
 }
@@ -105,7 +105,11 @@ foreach ($computersQuery as $entry)
 
 
 if ($computerscount > 0) {
- foreach($batch_queries as $query) $dbTrackHandler->query($query);
+  foreach($batch_queries as $query) 
+  {
+	echo $query;
+	$dbTrackHandler->query($query);
+  }
 } else {
 	/*
 	echo "Whoa! Nothing to check.";
