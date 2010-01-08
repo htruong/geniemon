@@ -61,5 +61,5 @@
   $cronReportEmails = ""; // seperated by |
 
   $siteLocation = "http://trulabs.truman.edu/geniemon";
-  
+  $reportCacheLocation = "/var/www/geniemon";
 ?>

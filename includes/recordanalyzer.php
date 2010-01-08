@@ -263,6 +263,7 @@ function addToResultBag(&$resultBag, &$groupType, &$resultElement) {
 
 function generateStats($params)
 {
+  global $reportCacheLocation;
   // Computer Statistics Generation
   $dbTrackHandler = connectDb();
   $resultBag = generateStatsBag($params, $dbTrackHandler);
@@ -391,7 +392,7 @@ $legends = array();
   // ----------------------------------------------------
   $cacheid = time();
   $filename = $cacheid . '.cache.json';
-  $myFile = "reports-cache/" . $filename;
+  $myFile = "$reportCacheLocation/reports-cache/" . $filename;
   $fh = fopen($myFile, 'w') or die("can't open file");
   fwrite($fh, $chart->toPrettyString());
   fclose($fh);
