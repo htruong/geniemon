@@ -270,36 +270,37 @@ function generateStats($params)
   // ----------------------------------------------------
   // Generate charts
   
-  $animation_1= isset($_POST['animation_1'])?$_POST['animation_1']:'pop';
-  $delay_1    = isset($_POST['delay_1'])?$_POST['delay_1']:0.5;
-  $cascade_1    = isset($_POST['cascade_1'])?$_POST['cascade_1']:1;
+  $animation_1= isset($params['animation_1'])?$params['animation_1']:'pop';
+  $delay_1    = isset($params['delay_1'])?$params['delay_1']:0.5;
+  $cascade_1    = isset($params['cascade_1'])?$params['cascade_1']:1;
   
-  $title = new title( "Genie Report: " . $_POST['reportName'] . " - Generated on " . date('Y/m/d h:i:s A'));
+  $title = new title( "Genie Report: " . $params['reportName'] . " - Generated on " . date('Y/m/d h:i:s A'));
   $title->set_style( "{font-size: 12px; color: #000000; text-align: center;}" );
   
   $bar_stack = new bar_stack();
   
-  if ($_POST['reportType'] == 'computerStats') {
+  if ($params['reportType'] == 'computerStats') {
     foreach ($resultBag as $elm) {
-      
+
       $tmpTotal = $elm[AVAIBILITY_TYPE_OFFLINE] + $elm[AVAIBILITY_TYPE_AVAILABLE] + $elm[AVAIBILITY_TYPE_BUSY];
       if ($tmpTotal == 0) $tmpTotal = 1; // Only Chuck Norris can divide by Zero.
-        
-        $bar_stack->append_stack(array(
+
+      $bar_stack->append_stack(array(
         $elm[AVAIBILITY_TYPE_OFFLINE] / $tmpTotal * 100,
-                                       $elm[AVAIBILITY_TYPE_AVAILABLE] / $tmpTotal * 100,
-                                       $elm[AVAIBILITY_TYPE_BUSY] / $tmpTotal * 100
-                                       ));
+        $elm[AVAIBILITY_TYPE_AVAILABLE] / $tmpTotal * 100,
+        $elm[AVAIBILITY_TYPE_BUSY] / $tmpTotal * 100
+      ));
   }
   
   $bar_stack->set_colours( array( '#FF0000', '#00FF00', '#A25B00'  ) );
   $bar_stack->set_keys(array(
   new bar_stack_key( '#FF0000', 'OFFLINE', 13 ),
-                     new bar_stack_key( '#00FF00', 'FREE', 13 ),
-                       new bar_stack_key( '#A25B00', 'BUSY', 13 )
-                       ));
-                       
-} else
+    new bar_stack_key( '#00FF00', 'FREE', 13 ),
+    new bar_stack_key( '#A25B00', 'BUSY', 13 )
+  ));
+
+}
+else
 {
   
   $allProgNames = array();

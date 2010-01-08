@@ -47,7 +47,7 @@ $params = array();
 $retCacheId = generateStats($params);
 
 $mailsubject = "Report(s) generated!";
-$mailbody = "Hi,\nThe report " . $params['reportName'] . " is ready to view\ngenerate-report.php?cache_id=$retCacheId \nHave fun!";
+$mailbody = "The report " . $params['reportName'] . " is ready to view at \n $siteLocation/generate-report.php?cache_id=$retCacheId";
 
 $reportmails = explode('|', $cronReportEmails);
 

@@ -59,4 +59,7 @@
   $ignored_programs = "svchost.exe|explorer.exe|ctfmon.exe|agent.exe|udaterui.exe|mctray.exe|smax4pnp.exe|ituneshelper.exe|acrotray.exe|hkcmd.exe|igfxpers.exe|isuspm.exe|genieupdclient.exe|rundll32.exe|logon.src";
 
   $cronReportEmails = ""; // seperated by |
+
+  $siteLocation = "http://trulabs.truman.edu/geniemon";
+  
 ?>
