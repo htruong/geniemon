@@ -89,7 +89,7 @@ foreach ($computersQuery as $entry)
   $regionHTML .= "\t\t\t\t".'<div class="computerbit ';
   if ($hasMap) $regionHTML .= 'absolute';
   $regionHTML .= ' computerbit-noinfo" id="computer'.$entry['id'].'" style="';
-  if ($hasMap) ? $regionHTML .= 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ';
+  if ($hasMap) $regionHTML .= 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ';
   $regionHTML .= '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >';
   $regionHTML .= '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;'
   if (!$hasMap) $regionHTML .= $entry['name']);
