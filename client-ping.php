@@ -31,12 +31,24 @@ if($_SERVER["REQUEST_METHOD"] != "POST") {
 	die('Invalid request.');
 }
 
+
+function getCompRegion($compName, $regNames)
+{
+  foreach ($regNames as $regId => $regName)
+  {
+    if (substr($compName, 0, strlen($regName)) ==  $regName) return $regId;
+  }
+  return -1;
+}
+
 $compName = sqlite_escape_string($_POST['computerName']); 
 //$compProcesses = explode("|", $_POST['processes']);
 if ($_POST['processes']) {
 	$compProcesses =  sqlite_escape_string($_POST['processes']);
 }
 $timeNow = time();
+
+
 
 if ($compName != "")
 {
@@ -45,6 +57,30 @@ if ($compName != "")
     // Translate from computer name to Id
     $compNames = getCompNamesId($dbTrackHandler);
     $compId = $compNames[$compName];
+
+    if (intval($compId)==0)
+    {
+      // If the computer has not been seen before
+      // Then we have to figure out what to do with it.
+      
+      // Let's see if the prefix of the computer matches any known region name
+      // if that's the case, then we create a new entry in the computer table to track it.
+      
+      $dbTrackHandler = connectDb();
+      
+      $regNames = getRegionNamesId($dbTrackHandler, true);
+      
+      $thisCompRegId = getCompRegion($compName, $regNames);
+      
+      $dbTrackHandler->query(
+      'INSERT INTO computers '.
+      '(name,x,y,region) '.
+      'VALUES ("'. $compName .'", 0, 0, ' . $thisCompRegId . ');');
+      
+      $compNames = getCompNamesId($dbTrackHandler, true);
+    }
+
+
     if (intval($compId)!=0)
     {
       $dbTrackHandler->query(
@@ -57,5 +93,6 @@ if ($compName != "")
           'VALUES ("'.$compId.'", '.$timeNow.', '.RECORDTYPE_PROGRAMS.', "'.$compProcesses.'"); ':'')
           );
     }
+
 }
 ?>

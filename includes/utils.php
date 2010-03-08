@@ -279,14 +279,14 @@ function nicetime($date)
 
 
 
-function getCompNamesId($dbTrackHandler)
+function getCompNamesId($dbTrackHandler, $forceUpdate=false)
 {
   $compNames = array();
   
   $cache = new Cache_Lite(cacheLiteOpts());
 
   // if the names are not cached, then cache them.
-  if (($compNames = $cache->get('compNames')) === false)
+  if (($compNames = $cache->get('compNames')) === false || $forceUpdate)
   {
     $computerNames = $dbTrackHandler->query('SELECT id, name FROM computers;');
     foreach ($computerNames as $entry)
@@ -296,6 +296,30 @@ function getCompNamesId($dbTrackHandler)
     $cache->save($compNames, 'compNames');
   }
   return $compNames;
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+function getRegionNamesId($dbTrackHandler, $forceUpdate=false)
+{
+  $regNames = array();
+  
+  $cache = new Cache_Lite(cacheLiteOpts());
+  
+  // if the names are not cached, then cache them.
+  if (($regNames = $cache->get('regNames')) === false || $forceUpdate)
+  {
+    $regionNames = $dbTrackHandler->query('SELECT id, region_name FROM zones;');
+    foreach ($regionNames as $entry)
+    {
+      $regNames[$entry['region_name']] = intval($entry['id']);
+    }
+    $cache->save($regNames, 'regNames');
+  }
+  return $regNames;
 }
 
 ?>
