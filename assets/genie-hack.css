@@ -94,10 +94,6 @@ body {
   cursor: pointer;
 }
 
-.abspos .computerbit {
-  position: absolute;
-}
-
 .computerbit-noinfo {
 	background: transparent url("bullet_gray.gif") center center no-repeat;
 }
