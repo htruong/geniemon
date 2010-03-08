@@ -67,6 +67,9 @@ $zonesQuery = $dbTrackHandler->query(
 	" VALUES ('$regionName', $mapWidth, $mapHeight, '$target');"
 	);
 
+    die('INSERT INTO zones (region_name, region_width, region_height, region_map_img)' .
+    " VALUES ('$regionName', $mapWidth, $mapHeight, '$target');");
+
 // redirect to main page
 header ('location: ./');
 
