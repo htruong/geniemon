@@ -87,7 +87,12 @@ foreach ($computersQuery as $entry)
           : ''
     ) .
     '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >' .
-    '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;</a></div>'."\n";
+    '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;' .
+    ($hasMap?
+    ''
+    : $entry['name']
+    ) .
+    '</a></div>'."\n";
 
 unset($computersQuery);
 
