@@ -86,6 +86,7 @@ $regionHTML = '';
   
 foreach ($computersQuery as $entry)
 {
+  global $hasMap;
   $regionHTML .= "\t\t\t\t".'<div class="computerbit ';
   if ($hasMap) $regionHTML .= 'absolute';
   $regionHTML .= ' computerbit-noinfo" id="computer'.$entry['id'].'" style="';
