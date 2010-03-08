@@ -45,9 +45,6 @@ if($_SERVER["REQUEST_METHOD"] != "POST") {
 	die('Invalid request.');
 }
 
-$mapWidth = 0;
-$mapHeight = 0;
-
 // From http://www.theopensurgery.com/29/php-upload-and-resize-image-script/
 if (isset ($submittedImage)){
 	$imagename = $submittedImage['name'];
@@ -60,6 +57,10 @@ if (isset ($submittedImage)){
 
 	list($mapWidth, $mapHeight) = getimagesize($file) ;
 }
+
+if (!$mapWidth) $mapWidth = '0';
+if (!$mapHeight) $mapHeight = '0';
+
 
 // Now add the new zone to the DB.
 $zonesQuery = $dbTrackHandler->query(
