@@ -63,8 +63,8 @@ $zoneQuery->closeCursor();
 unset($zoneQuery);
 
 $hasMap = ($regionWidth > 0) && ($regionHeight > 0);
-echo $hasMap?"This reg has a map":"Nope doesn't have a map";
 
+$regionCss = '';
 if ($hasMap)
 {
   // Construct CSS for the region
@@ -82,6 +82,8 @@ $computersQuery = $dbTrackHandler->query(
   'WHERE region = ' . $regid . ' '.
   'ORDER BY id;');
 
+$regionHTML = '';
+  
 foreach ($computersQuery as $entry)
   $regionHTML .= "\t\t\t\t".'<div class="computerbit ' . ($hasMap?'absolute':'') . ' computerbit-noinfo" id="computer'.$entry['id'].'" style="' .
     ($hasMap ? 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ' : '') .
