@@ -92,7 +92,7 @@ foreach ($computersQuery as $entry)
   if ($hasMap) $regionHTML .= 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ';
   $regionHTML .= '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >';
   $regionHTML .= '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;';
-  if (!$hasMap) $regionHTML .= $entry['name']);
+  if (!$hasMap) $regionHTML .= $entry['name'];
   $regionHTML .= '</a></div>'."\n";
 }
 
