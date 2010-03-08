@@ -62,7 +62,8 @@ $regionOverlay = $entry['region_map_img'];
 $zoneQuery->closeCursor();
 unset($zoneQuery);
 
-$hasMap = (bool)(($regionWidth > 0) && ($regionHeight > 0));
+$hasMap = false;
+if (($regionWidth > 0) && ($regionHeight > 0)) $hasMap = true;
 
 $regionCss = '';
 if ($hasMap)
