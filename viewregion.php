@@ -65,7 +65,7 @@ unset($zoneQuery);
 $hasMap = (($regionWidth > 0) && ($regionHeight > 0));
 
 $regionCss = '';
-$regionCssClass = (!$hasMap) ? 'abspos' : '';
+$regionCssClass = ($hasMap) ? 'abspos' : '';
 if ($hasMap)
 {
   // Construct CSS for the region
