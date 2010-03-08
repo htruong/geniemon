@@ -86,9 +86,8 @@ $regionHTML = '';
   
 foreach ($computersQuery as $entry)
 {
-  global $hasMap;
   $regionHTML .= "\t\t\t\t".'<div class="computerbit ';
-  if ($hasMap) $regionHTML .= 'absolute';
+  if ($hasMap) $regionHTML .= 'abspos';
   $regionHTML .= ' computerbit-noinfo" id="computer'.$entry['id'].'" style="';
   if ($hasMap) $regionHTML .= 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ';
   $regionHTML .= '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >';

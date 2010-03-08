@@ -86,6 +86,7 @@ body {
 	border: 1px dashed #777;
 	position: relative;
 }
+
 .computerbit {
   width: 16px;
   height: 16px;
@@ -93,8 +94,8 @@ body {
   cursor: pointer;
 }
 
-.absolute {
-position: absolute;
+.abspos {
+  position: absolute;
 }
 
 .computerbit-noinfo {
