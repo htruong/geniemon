@@ -62,9 +62,13 @@ $regionOverlay = $entry['region_map_img'];
 $zoneQuery->closeCursor();
 unset($zoneQuery);
 
-// Construct CSS for the region
-$regionCss = "display: block; width: $regionWidth"."px; height: $regionHeight"."px;";
-if ($regionOverlay != "") $regionCss .= " background: url($regionOverlay) top left no-repeat;";
+$hasMap = ($regionWidth > 0) && ($regionHeight > 0);
+if ($hasMap)
+{
+  // Construct CSS for the region
+  $regionCss = "display: block; width: $regionWidth"."px; height: $regionHeight"."px;";
+  if ($regionOverlay != "") $regionCss .= " background: url($regionOverlay) top left no-repeat;";
+}
 
 $zoneEditable = ( $_SESSION['loggedinUserPerms'] & EDIT_ZONES ) ? "true" : "false";
 
@@ -77,7 +81,13 @@ $computersQuery = $dbTrackHandler->query(
   'ORDER BY id;');
 
 foreach ($computersQuery as $entry)
-  $regionHTML .= "\t\t\t\t".'<div class="computerbit computerbit-noinfo" id="computer'.$entry['id'].'" style="left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; " onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" ><a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;</a></div>'."\n";
+  $regionHTML .= "\t\t\t\t".'<div class="computerbit ' . ($hasMap?'absolute':'') . ' computerbit-noinfo" id="computer'.$entry['id'].'" style="' .
+    ($hasMap?
+          'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; '
+          : ''
+    ) .
+    '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >' .
+    '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;</a></div>'."\n";
 
 unset($computersQuery);
 

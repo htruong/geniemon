@@ -87,11 +87,14 @@ body {
 	position: relative;
 }
 .computerbit {
-	width: 16px;
-	height: 16px;
-	position: absolute;
-	/*border: 1px dashed red;*/
-	cursor: pointer;
+  width: 16px;
+  height: 16px;
+  /*border: 1px dashed red;*/
+  cursor: pointer;
+}
+
+.absolute {
+position: absolute;
 }
 
 .computerbit-noinfo {
