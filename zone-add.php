@@ -33,7 +33,7 @@ if (!($_SESSION['loggedinUserPerms'] & EDIT_ZONES)) {
 	die('You do not have permission to access this page!');
 }
 
-$dbTrackHandler = new SQLiteDatabase(DB_TRACK_FILE);
+$dbTrackHandler = connectDb();
 
 // Now process the image that has just been uploaded
 
@@ -44,6 +44,9 @@ $regionName = $_POST['newZoneName'];
 if($_SERVER["REQUEST_METHOD"] != "POST") {
 	die('Invalid request.');
 }
+
+$mapWidth = 0;
+$mapHeight = 0;
 
 // From http://www.theopensurgery.com/29/php-upload-and-resize-image-script/
 if (isset ($submittedImage)){
