@@ -62,7 +62,7 @@ $regionOverlay = $entry['region_map_img'];
 $zoneQuery->closeCursor();
 unset($zoneQuery);
 
-$hasMap = ($regionWidth > 0) && ($regionHeight > 0);
+$hasMap = (bool)(($regionWidth > 0) && ($regionHeight > 0));
 
 $regionCss = '';
 if ($hasMap)
@@ -85,12 +85,14 @@ $computersQuery = $dbTrackHandler->query(
 $regionHTML = '';
   
 foreach ($computersQuery as $entry)
+{
   $regionHTML .= "\t\t\t\t".'<div class="computerbit ' . ($hasMap?'absolute':'') . ' computerbit-noinfo" id="computer'.$entry['id'].'" style="' .
     ($hasMap ? 'left: '.($entry['x']-$iconOffsetX).'px; top: '.($entry['y']-$iconOffsetY).'px; ' : '') .
     '" onClick="editComputerDetails(this, '.$entry['id'].',\''.$entry['name'].'\','.$entry['x'].','.$entry['y'].');" >' .
     '<a class="acomputer tips" rel="tip-computerdetails.php?id='.$entry['id'].'">&nbsp;' .
     ($hasMap ? '' : $entry['name']) .
     '</a></div>'."\n";
+}
 
 unset($computersQuery);
 
