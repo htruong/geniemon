@@ -116,6 +116,7 @@ echo <<<DIVMAP
 		<select id="computerRange" name="computerRange">
 		  <option value="all">- (all computers) -</option>
 		  <option value="zone">zone id=</option>
+		  <option value="computer">computer name=</option>
 		</select>
 		<input id="computersRangeParam" name="computersRangeParam" value=""> <br /> <br />
 	

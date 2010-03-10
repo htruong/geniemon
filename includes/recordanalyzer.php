@@ -72,6 +72,12 @@ function generateStatsBag($args, &$dbHandler) {
       $firstWHERE = false;
      }
      
+     // Now select computer
+     if ($args['computerRange'] == 'computer') {
+       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.name = ' . intval($args['computersRangeParam'])  . ' ';
+       $firstWHERE = false;
+     }
+     
      // Now select time frame
      if (intval($args['timeFrame']) != 0) {
       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . $recordTableName . '.time > ' . (time() - intval($args['timeFrame'])) . " ";
