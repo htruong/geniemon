@@ -74,7 +74,7 @@ function generateStatsBag($args, &$dbHandler) {
      
      // Now select computer
      if ($args['computerRange'] == 'computer') {
-       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.name = "' . intval($args['computersRangeParam'])  . '" ';
+       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.name = "' . $args['computersRangeParam']  . '" ';
        $firstWHERE = false;
      }
      
