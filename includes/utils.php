@@ -290,7 +290,7 @@ function getCompNamesId($dbTrackHandler, $forceUpdate=false)
     {
       $compNames[$entry['name']] = intval($entry['id']);
     }
-    apc_add('compNames', $compNames);
+    apc_store('compNames', $compNames);
   }
   return $compNames;
 }
@@ -312,15 +312,31 @@ function getRegionNamesId($dbTrackHandler, $forceUpdate=false)
     {
       $regNames[$entry['region_name']] = intval($entry['id']);
     }
-    apc_add('regNames', $regNames);
+    apc_store('regNames', $regNames);
   }
   return $regNames;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-function getAllComputersIds($dbTrackHandler, $regionId, $forceUpdate=false)
+function getAllComputersZones($dbTrackHandler, $forceUpdate=false)
 {
 
+  $zonesComps = array();
+  $zonesComps = apc_fetch('$zonesComps', $success);
+
+  // if the zones are not cached, then cache them.
+  if (!$success || $forceUpdate)
+  {
+    $computerIdZones = $dbTrackHandler->query('SELECT computers.id as compId,
+zones.id  as zoneId FROM computers LEFT OUTER JOIN zones ON
+computers.region = zones.id;');
+    foreach ($computerIdZones as $entry)
+    {
+      $zonesComps[$entry['zoneId']][] = intval($entry['compId']);
+    }
+    apc_store('zonesComps', $zonesComps);
+  }
+  return $zonesComps;
 }
 ?>

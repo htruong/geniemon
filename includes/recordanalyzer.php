@@ -62,19 +62,37 @@ function generateStatsBag($args, &$dbHandler) {
      $recordTableName = 'trackrecords';
 
      $sql_cmd =
-        'SELECT trackrecords.time, trackrecords.status, trackrecords.compid, computers.name, computers.id, computers.region FROM trackrecords ' .
-        'LEFT OUTER JOIN computers ON trackrecords.compid = computers.id ';
+        'SELECT trackrecords.time, trackrecords.status, trackrecords.compid FROM
+trackrecords '
+        /* 'SELECT trackrecords.time, trackrecords.status, trackrecords.compid,
+computers.name, computers.id, computers.region FROM trackrecords ' .
+        'LEFT OUTER JOIN computers ON trackrecords.compid = computers.id '; */
      $firstWHERE = true;
 
      // Now select zone
      if ($args['computerRange'] == 'zone') {
-      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.region = ' . intval($args['computersRangeParam'])  . ' ';
+
+      $allZones = getAllComputersZones($dbHandler);
+      $affectedComps = $allZones[intval($args['computersRangeParam'])];
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . '(';
+      $firstSubWHERE = false;
+
+      foreach ($affectedComps as $compId)
+      {
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' computers.compid = ' .
+$compId ;
+	$firstSubWHERE = false;
+      }
+
+      $sql_cmd .= ') ';
       $firstWHERE = false;
      }
      
      // Now select computer
      if ($args['computerRange'] == 'computer') {
-       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.name = "' . $args['computersRangeParam']  . '" ';
+       $compId = getCompNamesId($dbTrackHandler);
+       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.compid = "' .
+$compId[$args['computersRangeParam']] . '" ';
        $firstWHERE = false;
      }
      
@@ -127,16 +145,31 @@ function generateStatsBag($args, &$dbHandler) {
      $recordTableName = 'miscrecords';
 
      $sql_cmd =
-     'SELECT miscrecords.time, miscrecords.data, miscrecords.compid, computers.name, computers.id FROM miscrecords ' .
-        'LEFT OUTER JOIN computers ON miscrecords.compid = computers.id ' .
-		'WHERE ' . $recordTableName . '.recordtype = ' . RECORDTYPE_PROGRAMS . ' ';
+     'SELECT miscrecords.time, miscrecords.data, miscrecords.compid FROM
+miscrecords ' .
+      'WHERE ' . $recordTableName . '.recordtype = ' .
+RECORDTYPE_PROGRAMS . ' ';
 
         
-        // Now select zone
-        if ($args['computerRange'] == 'zone') {
-          $sql_cmd .= 'AND computers.region = ' . intval($args['computersRangeParam'])  . ' ';
-          $firstWHERE = false;
-        }
+     // Now select zone
+     if ($args['computerRange'] == 'zone') {
+
+      $allZones = getAllComputersZones($dbHandler);
+      $affectedComps = $allZones[intval($args['computersRangeParam'])];
+      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . '(';
+      $firstSubWHERE = false;
+
+      foreach ($affectedComps as $compId)
+      {
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' computers.compid = ' .
+$compId ;
+	$firstSubWHERE = false;
+      }
+
+      $sql_cmd .= ') ';
+      $firstWHERE = false;
+     }
+     
         
       // Now select time frame
       if (intval($args['timeFrame']) != 0) {
