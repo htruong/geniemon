@@ -26,9 +26,6 @@
 
 
 ///////////////////////////////////////////////////////////////////////////////
-require('Cache/Lite.php');
-
-
 define('THIS_VERSION',		'0.10.01.081049');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -212,24 +209,25 @@ function initSession()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
 $allignored = explode('|', $ignored_programs);
+
 function validProgram($program)
 {
   global $allignored;
-  return !in_array(strtolower($program), $allignored);
+
+  $result = apc_fetch('ignored_' . $program, $success);
+
+  if (!$success)
+  {
+    $result = !in_array(strtolower($program), $allignored);
+    apc_add('ignored_' . $program, $result);
+  }
+
+  return $result;
+  
 }
 
-
-function cacheLiteOpts()
-{
- $options = array
- (
-  'cacheDir' => '/tmp/',
-  'lifeTime' => 3600, //1 hour
-  'automaticSerialization' => true
- );
- return $options;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // FROM http://us.php.net/time
@@ -282,18 +280,17 @@ function nicetime($date)
 function getCompNamesId($dbTrackHandler, $forceUpdate=false)
 {
   $compNames = array();
-  
-  $cache = new Cache_Lite(cacheLiteOpts());
+  $compNames = apc_fetch('compNames', $success);
 
   // if the names are not cached, then cache them.
-  if (($compNames = $cache->get('compNames')) === false || $forceUpdate)
+  if (!$success || $forceUpdate)
   {
     $computerNames = $dbTrackHandler->query('SELECT id, name FROM computers;');
     foreach ($computerNames as $entry)
     {
       $compNames[$entry['name']] = intval($entry['id']);
     }
-    $cache->save($compNames, 'compNames');
+    apc_add('compNames', $compNames);
   }
   return $compNames;
 }
@@ -306,20 +303,24 @@ function getCompNamesId($dbTrackHandler, $forceUpdate=false)
 function getRegionNamesId($dbTrackHandler, $forceUpdate=false)
 {
   $regNames = array();
-  
-  $cache = new Cache_Lite(cacheLiteOpts());
-  
+  $regNames = apc_fetch('regNames', $success);
   // if the names are not cached, then cache them.
-  if (($regNames = $cache->get('regNames')) === false || $forceUpdate)
+  if (!$success || $forceUpdate)
   {
     $regionNames = $dbTrackHandler->query('SELECT id, region_name FROM zones;');
     foreach ($regionNames as $entry)
     {
       $regNames[$entry['region_name']] = intval($entry['id']);
     }
-    $cache->save($regNames, 'regNames');
+    apc_add('regNames', $regNames);
   }
   return $regNames;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+function getAllComputersIds($dbTrackHandler, $regionId, $forceUpdate=false)
+{
+
+}
 ?>
