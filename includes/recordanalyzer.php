@@ -79,7 +79,7 @@ computers.name, computers.id, computers.region FROM trackrecords ' .
 
       foreach ($affectedComps as $compId)
       {
-	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' trackrecords.compid = ' .
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' compid = ' .
 $compId ;
 	$firstSubWHERE = false;
       }
@@ -91,7 +91,7 @@ $compId ;
      // Now select computer
      if ($args['computerRange'] == 'computer') {
        $compId = getCompNamesId($dbTrackHandler);
-       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' trackrecords.compid = "'
+       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' compid = "'
 . $compId[$args['computersRangeParam']] . '" ';
        $firstWHERE = false;
      }
@@ -161,7 +161,7 @@ RECORDTYPE_PROGRAMS . ' ';
 
       foreach ($affectedComps as $compId)
       {
-	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' trackrecords.compid = ' .
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' compid = ' .
 $compId ;
 	$firstSubWHERE = false;
       }
