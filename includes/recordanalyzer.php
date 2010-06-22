@@ -71,11 +71,11 @@ computers.name, computers.id, computers.region FROM trackrecords ' .
 
      // Now select zone
       if ($args['computerRange'] == 'zone') {
-
-      $allZones = getAllComputersZones($dbHandler);
-      $affectedComps = $allZones[intval($args['computersRangeParam'])];
-      $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . 'compid IN (' .
-implode(', ', $affectedComps) . ') ';
+	$allZones = getAllComputersZones($dbHandler);
+	$affectedComps = $allZones[intval($args['computersRangeParam'])];
+	$sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . 'compid IN (' .
+  implode(', ', $affectedComps) . ') ';
+	$firstWHERE = false;
       }
      
      // Now select computer
@@ -148,6 +148,7 @@ RECORDTYPE_PROGRAMS . ' ';
       $affectedComps = $allZones[intval($args['computersRangeParam'])];
       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . 'compid IN (' .
 implode(', ', $affectedComps) . ') ';
+      $firstWHERE = false;
      }
         
       // Now select time frame
