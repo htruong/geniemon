@@ -295,6 +295,27 @@ function getCompNamesId($dbTrackHandler, $forceUpdate=false)
   return $compNames;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+function getCompIdsName($dbTrackHandler, $forceUpdate=false)
+{
+  $compNames = array();
+  $compNames = apc_fetch('compIds', $success);
+
+  // if the names are not cached, then cache them.
+  if (!$success || $forceUpdate)
+  {
+    $computerNames = $dbTrackHandler->query('SELECT id, name FROM computers;');
+    foreach ($computerNames as $entry)
+    {
+      $compNames[intval($entry['id'])] = $entry['name'];
+    }
+    apc_store('compIds', $compNames);
+  }
+  return $compNames;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////////

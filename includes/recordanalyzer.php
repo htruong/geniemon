@@ -209,9 +209,10 @@ implode(', ', $affectedComps) . ') ';
  }
  
  $computerRecords = array();
+ $compIds = getCompIdsName($dbTrackHandler);
 
  foreach ($results as $result) {
-   $currentComputer = $result['name'];
+   $currentComputer = $result['compid'];
 
    $currentRecordedStatus = null;
 
@@ -249,7 +250,7 @@ implode(', ', $affectedComps) . ') ';
       break;
 
 	default: // Computer Name
-	  $resultGroup = &$currentComputer;
+	  $resultGroup = $compIds[$currentComputer];
 	break;
 
       } // switch $sortmode
