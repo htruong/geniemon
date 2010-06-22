@@ -63,14 +63,14 @@ function generateStatsBag($args, &$dbHandler) {
 
      $sql_cmd =
         'SELECT trackrecords.time, trackrecords.status, trackrecords.compid FROM
-trackrecords '
+trackrecords ';
         /* 'SELECT trackrecords.time, trackrecords.status, trackrecords.compid,
 computers.name, computers.id, computers.region FROM trackrecords ' .
         'LEFT OUTER JOIN computers ON trackrecords.compid = computers.id '; */
      $firstWHERE = true;
 
      // Now select zone
-     if ($args['computerRange'] == 'zone') {
+      if ($args['computerRange'] == 'zone') {
 
       $allZones = getAllComputersZones($dbHandler);
       $affectedComps = $allZones[intval($args['computersRangeParam'])];
