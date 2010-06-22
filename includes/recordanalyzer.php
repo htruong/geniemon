@@ -27,8 +27,7 @@
 
 function isDupeRecord($name, $timeStm, &$computerRecords) {
   global $check_interval;
-  $compIds = getCompIdsName($dbTrackHandler);
- 
+
   //echo "checking for dupe $name at $timeStm...";
   
   // see if the computer already has a record recorded before
@@ -56,7 +55,8 @@ function generateStatsBag($args, &$dbHandler) {
 //$batchRecordProcess = 10000; // analyse 10000 at a time
  $recordTableName = '';
  $sql_cmd = '';
-
+ $compIds = getCompIdsName($dbHandler);
+ 
  switch ($args['reportType']) {
    ////////////////////////////////////////////////////////////////////////////////////////////////////
    case 'computerStats':
