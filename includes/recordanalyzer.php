@@ -26,7 +26,8 @@
 // check if the record is a dupe (too near to the last record)
 
 function isDupeRecord($name, $timeStm, &$computerRecords) {
-  global $check_interval; 
+  global $check_interval;
+  $compIds = getCompIdsName($dbTrackHandler);
  
   //echo "checking for dupe $name at $timeStm...";
   
@@ -209,7 +210,6 @@ implode(', ', $affectedComps) . ') ';
  }
  
  $computerRecords = array();
- $compIds = getCompIdsName($dbTrackHandler);
 
  foreach ($results as $result) {
    $currentComputer = $result['compid'];
