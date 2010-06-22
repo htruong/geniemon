@@ -216,12 +216,12 @@ function validProgram($program)
 {
   global $allignored;
 
-  $result = apc_fetch('ignored_' . $program, $success);
+  $result = apc_fetch('ignored_' . strtolower($program), $success);
 
   if (!$success)
   {
     $result = !in_array(strtolower($program), $allignored);
-    apc_add('ignored_' . $program, $result);
+    apc_add('ignored_' . strtolower($program), $result);
   }
 
   return $result;
