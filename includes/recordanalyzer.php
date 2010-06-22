@@ -75,11 +75,11 @@ computers.name, computers.id, computers.region FROM trackrecords ' .
       $allZones = getAllComputersZones($dbHandler);
       $affectedComps = $allZones[intval($args['computersRangeParam'])];
       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . '(';
-      $firstSubWHERE = false;
+      $firstSubWHERE = true;
 
       foreach ($affectedComps as $compId)
       {
-	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' computers.compid = ' .
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' trackrecords.compid = ' .
 $compId ;
 	$firstSubWHERE = false;
       }
@@ -91,8 +91,8 @@ $compId ;
      // Now select computer
      if ($args['computerRange'] == 'computer') {
        $compId = getCompNamesId($dbTrackHandler);
-       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' computers.compid = "' .
-$compId[$args['computersRangeParam']] . '" ';
+       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . ' trackrecords.compid = "'
+. $compId[$args['computersRangeParam']] . '" ';
        $firstWHERE = false;
      }
      
@@ -157,11 +157,11 @@ RECORDTYPE_PROGRAMS . ' ';
       $allZones = getAllComputersZones($dbHandler);
       $affectedComps = $allZones[intval($args['computersRangeParam'])];
       $sql_cmd .= (($firstWHERE)?'WHERE ':'AND ') . '(';
-      $firstSubWHERE = false;
+      $firstSubWHERE = true;
 
       foreach ($affectedComps as $compId)
       {
-	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' computers.compid = ' .
+	$sql_cmd .= (($firstSubWHERE)?'':' OR ') . ' trackrecords.compid = ' .
 $compId ;
 	$firstSubWHERE = false;
       }
