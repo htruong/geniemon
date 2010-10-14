@@ -59,7 +59,7 @@ if ($compName != "")
     $compId = $compNames[$compName];
 
     if (intval($compId)==0)
-    {
+    { 
       // If the computer has not been seen before
       // Then we have to figure out what to do with it.
       
