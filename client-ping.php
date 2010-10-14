@@ -39,11 +39,11 @@ function cleanCompName($comName)
   return strtoupper($pieces[0]);
 }
 
-function getCompRegion($compName, $regNames)
+function getCompRegion($comp_name, $reg_names)
 {
-  foreach ($regNames as $regId => $regName)
+  foreach ($reg_names as $regId => $reg_name)
   {
-    if (substr($compName, 0, strlen($regName)) ==  $regName) return $regId;
+    if (substr($comp_name, 0, strlen($reg_name)) ==  $reg_name) return $regId;
   }
   return -1;
 }
