@@ -31,6 +31,13 @@ if($_SERVER["REQUEST_METHOD"] != "POST") {
 	die('Invalid request.');
 }
 
+// some computers return funny names such as pml31201.truman.edu
+// we must truncate to pml31201
+function cleanCompName($comName)
+{
+  $pieces = explode(".", $comName);
+  return strtoupper($pieces[0]);
+}
 
 function getCompRegion($compName, $regNames)
 {
@@ -41,7 +48,7 @@ function getCompRegion($compName, $regNames)
   return -1;
 }
 
-$compName = sqlite_escape_string($_POST['computerName']); 
+$compName = cleanCompName(sqlite_escape_string($_POST['computerName'])); 
 //$compProcesses = explode("|", $_POST['processes']);
 if ($_POST['processes']) {
 	$compProcesses =  sqlite_escape_string($_POST['processes']);
