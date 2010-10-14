@@ -65,19 +65,21 @@ if ($compName != "")
       
       // Let's see if the prefix of the computer matches any known region name
       // if that's the case, then we create a new entry in the computer table to track it.
-      
-      $dbTrackHandler = connectDb();
-      
-      $regNames = getRegionNamesId($dbTrackHandler, true);
-      
-      $thisCompRegId = getCompRegion($compName, $regNames);
-      
-      $dbTrackHandler->query(
-      'INSERT INTO computers '.
-      '(name,x,y,region) '.
-      'VALUES ("'. $compName .'", 0, 0, ' . $thisCompRegId . ');');
-      
-      $compNames = getCompNamesId($dbTrackHandler, true);
+      if ($add_unknown_computers)
+      {
+	$dbTrackHandler = connectDb();
+	
+	$regNames = getRegionNamesId($dbTrackHandler, true);
+	
+	$thisCompRegId = getCompRegion($compName, $regNames);
+	
+	$dbTrackHandler->query(
+	'INSERT INTO computers '.
+	'(name,x,y,region) '.
+	'VALUES ("'. $compName .'", 0, 0, ' . $thisCompRegId . ');');
+	
+	$compNames = getCompNamesId($dbTrackHandler, true);
+      }
     }
 
 
