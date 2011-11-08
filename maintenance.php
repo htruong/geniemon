@@ -65,7 +65,7 @@ function auto_collect($agressive = false) {
          WHERE '. ($agressive ? '' : '`computers`.`region` = -1 AND ') . '
          `computers`.`name` LIKE "' . $autoCollectRegion['collect_pattern'] . '";'
       )->fetch(PDO::FETCH_NUM);
-    echo "Collected $totalComputersAffected to zone $autoCollectRegion['region_name']...\n";
+    echo("Collected $totalComputersAffected to zone $autoCollectRegion['region_name']...\n");
   }
 }
 
