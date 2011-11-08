@@ -77,10 +77,11 @@ $zoneEditable = ( $_SESSION['loggedinUserPerms'] & EDIT_ZONES ) ? "true" : "fals
 // Fetch available computers in the region
 
 $computersQuery = $dbTrackHandler->query(
-  'SELECT * ' .
-  'FROM computers ' .
-  'WHERE region = ' . $regid . ' '.
-  'ORDER BY id;');
+  "SELECT DISTINCT computers.*, child.region_name, child.id
+  FROM computers, zones as parent, zones as child
+  WHERE computers.region=child.id
+  AND (child.id=$regid OR (parent.id=$regid AND child.parent_id = parent.id))
+  ORDER BY child.id");
 
 $regionHTML = '';
   
