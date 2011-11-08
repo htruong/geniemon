@@ -38,7 +38,7 @@ $dbTrackHandler = connectDb();
 
 // Query All Zones
 $zonesQuery = $dbTrackHandler->query(
-	'SELECT * FROM zones;'
+	'SELECT * FROM zones WHERE `parent_id`=0;'
 	);
 
 foreach ($zonesQuery as $entry) {
